@@ -41,5 +41,5 @@ services:
     command: "bash -c 'pip install python-telegram-bot[socks]==9.0.0 && python seabattle/bot.py'"
 
     environment:
-      - TELEGRAM_TOKEN=602111684:AAG8WzeKh62iOz1F-CQfmvpNwLdACbqz3cA
-      - PROXY_URL=sock5://88.99.20.165:1080
+      - TELEGRAM_TOKEN
+      - PROXY_URL
