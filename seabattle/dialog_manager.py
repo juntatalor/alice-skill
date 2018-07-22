@@ -11,7 +11,7 @@ from rasa_nlu.data_router import DataRouter
 from seabattle import game
 
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 router = DataRouter('mldata/')
 MESSAGE_TEMPLATES = {
     'miss': 'Мимо. Я хожу %(shot)s',
@@ -167,7 +167,7 @@ class DialogManager(object):
     def handle_message(self, message):
         data = router.extract({'q': message})
         router_response = router.parse(data)
-        logger.error('Router response %s', json.dumps(router_response, indent=2))
+        log.info('Router response %s', json.dumps(router_response, indent=2))
 
         if router_response['intent']['confidence'] < 0.8:
             dmresponse = self._get_dmresponse_by_key('dontunderstand')
@@ -180,4 +180,11 @@ class DialogManager(object):
         if dmresponse.key != 'dontunderstand':
             # сохраняем только последний осмысленный ответ в сессии не затыкались после нескольких повтори
             self._update_session(dmresponse)
+
+        if self.session.get('game') is not None:
+            log.info('My field:')
+            self.session['game'].print_field()
+            log.info('Enemy field:')
+            self.session['game'].print_enemy_field()
+
         return dmresponse

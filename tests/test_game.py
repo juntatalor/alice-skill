@@ -15,16 +15,16 @@ def game():
 
 @pytest.fixture
 def game_with_field(game):
-    field = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
-             1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+    field = [0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
+             1, 1, 1, 0, 0, 0, 0, 0, 0, 1,
              0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
              0, 0, 0, 1, 0, 1, 0, 1, 0, 0,
              1, 1, 0, 1, 0, 0, 0, 0, 0, 0,
              0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
-             0, 0, 0, 1, 0, 1, 1, 1, 0, 0,
+             0, 1, 0, 1, 0, 1, 1, 1, 0, 0,
              0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-             0, 1, 0, 0, 1, 1, 0, 0, 0, 0,
-             0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
+             0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+             1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     game.start_new_game(field=field)
 
@@ -49,6 +49,8 @@ def test_helper_functions(game):
     assert game.convert_to_position('d пять') == (5, 5)
 
     assert game.convert_to_position('10 10') == (10, 10)
+    assert game.convert_to_position('1 10') == (1, 10)
+    assert game.convert_to_position('10 1') == (10, 1)
     assert game.convert_to_position('1 2') == (1, 2)
     assert game.convert_to_position('8 4') == (8, 4)
     assert game.convert_to_position('восемь четыре') == (8, 4)
@@ -71,8 +73,11 @@ def test_helper_functions(game):
     assert game.convert_from_position((6, 5), numbers=True) == '6, 5'
 
 
-def test_shot(game):
-    pass
+def test_shot(game_with_field):
+    assert game_with_field.handle_enemy_shot((10, 1)) == 'hit'
+    assert game_with_field.handle_enemy_shot((10, 2)) == 'kill'
+
+    assert game_with_field.handle_enemy_shot((1, 10)) == 'kill'
 
 
 def test_dead_ship(game_with_field):

@@ -449,6 +449,11 @@
         "entities": []
       },
       {
+        "text": "ранил",
+        "intent": "hit",
+        "entities": []
+      },
+      {
         "text": "ты попала",
         "intent": "hit",
         "entities": []
@@ -469,7 +474,17 @@
         "entities": []
       },
       {
+        "text": "ты ранил",
+        "intent": "hit",
+        "entities": []
+      },
+      {
         "text": "убил",
+        "intent": "kill",
+        "entities": []
+      },
+      {
+        "text": "убила",
         "intent": "kill",
         "entities": []
       },
@@ -495,11 +510,6 @@
       },
       {
         "text": "корабли тону",
-        "intent": "kill",
-        "entities": []
-      },
-      {
-        "text": "убила",
         "intent": "kill",
         "entities": []
       },

@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import random
 import re
+import logging
 
 from transliterate import translit
 
@@ -12,6 +13,8 @@ SHIP = 1
 BLOCKED = 2
 HIT = 3
 MISS = 4
+
+log = logging.getLogger(__name__)
 
 
 class BaseGame(object):
@@ -72,18 +75,30 @@ class BaseGame(object):
     def generate_field(self):
         raise NotImplementedError()
 
-    def print_field(self):
-        mapping = ['0', '1', 'x']
+    def print_field(self, field=None):
+        if not self.size:
+            log.info('Empty field')
+            return
 
-        print('-' * (self.size + 2))
+        if field is None:
+            field = self.field
+
+        mapping = [EMPTY, SHIP, BLOCKED, HIT, MISS]
+
+        lines = ['']
+        lines.append('-' * (self.size + 2))
         for y in range(self.size):
-            print('|%s|' % ''.join(mapping[x] for x in self.field[y * self.size: (y + 1) * self.size]))
-        print('-' * (self.size + 2))
+            lines.append('|%s|' % ''.join(str(mapping[x]) for x in field[y * self.size: (y + 1) * self.size]))
+        lines.append('-' * (self.size + 2))
+        log.info('\n'.join(lines))
+
+    def print_enemy_field(self):
+        self.print_field(self.enemy_field)
 
     def handle_enemy_shot(self, position):
         index = self.calc_index(position)
 
-        if self.field[index] in (SHIP, HIT):
+        if self.field[index] == SHIP:
             self.field[index] = HIT
 
             if self.is_dead_ship(index):
@@ -91,6 +106,8 @@ class BaseGame(object):
                 return 'kill'
             else:
                 return 'hit'
+        elif self.field[index] == HIT:
+            return 'kill' if self.is_dead_ship(index) else 'hit'
         else:
             return 'miss'
 
@@ -265,15 +282,6 @@ class Game(BaseGame):
         # Текущий корабль противника, который будем добивать (координаты)
         self.current_enemy_ship = []
 
-    def print_field(self, field_attr='field'):
-        mapping = ['0', '1', 'x', '!', '.']
-        field = getattr(self, field_attr)
-
-        print('-' * (self.size + 2))
-        for y in range(self.size):
-            print('|%s|' % ''.join(mapping[x] for x in field[y * self.size: (y + 1) * self.size]))
-        print('-' * (self.size + 2))
-
     def start_new_game(self, *args, **kwargs):
         super(Game, self).start_new_game(*args, **kwargs)
 
@@ -420,7 +428,7 @@ class Game(BaseGame):
             index = random.choice(d)
         else:
             print('Another player is tricking me, no place to shoot')
-            self.print_field(field_attr='enemy_field')
+            self.print_enemy_field()
             index = 0
 
         self.last_shot_position = self.calc_position(index)

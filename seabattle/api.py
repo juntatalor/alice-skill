@@ -12,20 +12,15 @@ from seabattle import dialog_manager as dm
 from seabattle import session
 
 
-app = Flask(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
-handler = logging.StreamHandler(stream=sys.stderr)
-handler.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-logger = logging.getLogger('seabattle')
-logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+app = Flask(__name__)
+log = logging.getLogger(__name__)
 
 
 @app.route('/', methods=['POST'])
 def main():
-    logger.error('Request: %r', request.json)
+    log.info('Request: %r', request.json)
 
     response = {
         'version': request.json['version'],
@@ -49,5 +44,5 @@ def main():
     if dmresponse.tts is not None:
         response['response']['tts'] = dmresponse.tts
 
-    logger.error('Response: %r', response)
+    log.info('Response: %r', response)
     return json.dumps(response)
