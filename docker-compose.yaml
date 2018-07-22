@@ -38,7 +38,8 @@ services:
   bot:
     extends: base
 
-    command: "python seabattle/bot.py"
+    command: "bash -c 'pip install python-telegram-bot[socks]==9.0.0 && python seabattle/bot.py'"
 
     environment:
       - TELEGRAM_TOKEN
+      - PROXY_URL

@@ -7,9 +7,7 @@ import os
 
 from telegram import ext as telegram_ext
 
-from seabattle import dialog_manager as dm
-from seabattle import session
-
+from seabattle import dialog_manager as dm, session
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -29,7 +27,12 @@ def error_handler(bot, update, error):
     logger.error('Update "{0}" caused error "{1}"', update, error)
 
 
-updater = telegram_ext.Updater(token=os.environ.get('TELEGRAM_TOKEN'))
+REQUEST_KWARGS = {}
+proxy_url = os.environ.get('PROXY_URL')
+if proxy_url:
+    REQUEST_KWARGS['proxy_url'] = 'socks5://18.130.106.205:9999'
+
+updater = telegram_ext.Updater(token=os.environ.get('TELEGRAM_TOKEN'), request_kwargs=REQUEST_KWARGS)
 dispatcher = updater.dispatcher
 dispatcher.add_handler(telegram_ext.MessageHandler(telegram_ext.Filters.text, bot_handler))
 updater.start_polling()
