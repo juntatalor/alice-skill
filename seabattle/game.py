@@ -505,7 +505,10 @@ class Game(BaseGame):
                 # Больше не стреляем по клеткам, где был корабль
                 self.mark_blocked(self.current_enemy_ship)
                 # Больше не пытаемя поставить этот корабль на свободные места, чтобы не сбивать веса
-                self.enemy_ships.remove(len(self.current_enemy_ship))
+                try:
+                    self.enemy_ships.remove(len(self.current_enemy_ship))
+                except ValueError:
+                    print('Another alice is cheating! We have already killed all ships of this type')
                 self.current_enemy_ship = []
                 self.enemy_ships_count -= 1
 
